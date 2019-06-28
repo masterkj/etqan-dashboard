@@ -1,5 +1,5 @@
 <template>
-  <svg class="vuestic-icon-vuestic" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 129 15.4" style="enable-background:new 0 0 129 15.4;" xml:space="preserve">
+  <!-- <svg class="vuestic-icon-vuestic" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 129 15.4" style="enable-background:new 0 0 129 15.4;" xml:space="preserve">
     <g>
       <path class="st0" d="M0,0.5h3.7l2.9,6.9l2.9-6.9h3.7L6.8,15.4H6.4L0,0.5z"/>
       <path class="st0" d="M22.2,0.5h3.5v9c0,1.9,0.9,2.6,2.1,2.6c1.3,0,2.2-0.7,2.2-2.6v-9h3.5V10c0,3.4-2.5,5.3-5.7,5.3
@@ -13,7 +13,9 @@
       <path class="st0" d="M122.8,0c2.7,0,4.6,1,6.2,2.6l-2.4,2.3c-1-1-2.3-1.6-3.7-1.6c-2.6,0-4.2,1.9-4.2,4.3s1.7,4.3,4.2,4.3
         c1.4,0,2.7-0.6,3.7-1.6l2.4,2.3c-1.4,1.5-3.4,2.6-6.1,2.6c-4.6,0-7.8-3.4-7.8-7.7S118.2,0,122.8,0z"/>
     </g>
-  </svg>
+  </svg> -->
+
+  <p> A L - E T Q A N  </P>
 </template>
 
 <script>

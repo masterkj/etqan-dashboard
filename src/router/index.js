@@ -33,7 +33,7 @@ export default new Router({
     ...demoRoutes,
     {
       path: '*',
-      redirect: { name: 'dashboard' },
+      redirect: { name: 'tables' },
     },
     {
       path: '/auth',
@@ -87,33 +87,24 @@ export default new Router({
       component: AppLayout,
       children: [
         {
-          name: 'dashboard',
-          path: 'dashboard',
-          component: lazyLoading('dashboard/Dashboard'),
-          default: true,
+          name: 'subjects',
+          path: 'subjects',
+          component: lazyLoading('subjects/index'),
         },
         {
-          name: 'statistics',
-          path: 'statistics',
-          component: EmptyParentComponent,
-          children: [
-            {
-              name: 'charts',
-              path: 'charts',
-              component: lazyLoading('statistics/charts/Charts'),
-              meta: {
-                wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Charts',
-              },
-            },
-            {
-              name: 'progress-bars',
-              path: 'progress-bars',
-              component: lazyLoading('statistics/progress-bars/ProgressBars'),
-              meta: {
-                wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Progress-Bars',
-              },
-            },
-          ],
+          name: 'courses',
+          path: 'courses',
+          component: lazyLoading('courses/index'),
+        },
+        {
+          name: 'reamanings-payments',
+          path: 'reamanings-payments',
+          component: lazyLoading('reamanings-payments/index'),
+        },
+        {
+          name: 'students-in-course',
+          path: 'students-in-course/:id',
+          component: lazyLoading('courses/studenst-in-course'),
         },
         {
           name: 'forms',
@@ -279,73 +270,6 @@ export default new Router({
               component: lazyLoading('ui/filters/Filters')
             }
           ]
-        },
-        {
-          name: 'extra',
-          path: 'extra',
-          component: lazyLoading('extra/Extra'),
-          meta: {
-            wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Tabs',
-          },
-        },
-        {
-          name: 'maps',
-          path: 'maps',
-          component: EmptyParentComponent,
-          children: [
-            {
-              name: 'google-maps',
-              path: 'google-maps',
-              component: lazyLoading('maps/google-maps/GoogleMapsPage'),
-              meta: {
-                wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Maps',
-              },
-            },
-            {
-              name: 'yandex-maps',
-              path: 'yandex-maps',
-              component: lazyLoading('maps/yandex-maps/YandexMapsPage'),
-              meta: {
-                wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Maps',
-              },
-            },
-            {
-              name: 'leaflet-maps',
-              path: 'leaflet-maps',
-              component: lazyLoading('maps/leaflet-maps/LeafletMapsPage'),
-              meta: {
-                wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Maps',
-              },
-            },
-            {
-              name: 'bubble-maps',
-              path: 'bubble-maps',
-              component: lazyLoading('maps/bubble-maps/BubbleMapsPage'),
-              meta: {
-                wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Maps',
-              },
-            },
-            {
-              name: 'line-maps',
-              path: 'line-maps',
-              component: lazyLoading('maps/line-maps/LineMapsPage'),
-              meta: {
-                wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Maps',
-              },
-            },
-          ],
-        },
-        {
-          name: 'pages',
-          path: 'pages',
-          component: EmptyParentComponent,
-          children: [
-            {
-              name: '404-pages',
-              path: '404-pages',
-              component: lazyLoading('pages/404-pages/404PagesPage'),
-            },
-          ],
         },
       ],
     },
