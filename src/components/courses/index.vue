@@ -8,35 +8,104 @@
               <thead>
                 <tr>
                   <td>{{'cours-name' | translate}}</td>
-                  <td>{{'have-exam' | translate}}</td>
-                  <td>{{'practical-mark' | translate}}</td>
-                  <td></td>
+                  <td>{{'start_date' | translate}}</td>
+                  <td>{{'end_date' | translate}}</td>
+                  <td>{{'actions' | translate}}</td>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="subject in subjects" :key="subject.id">
-                  <td>{{subject.cours_name}}</td>
-                  <td>{{haveExam(subject.have_exam)}}</td>
-                  <td>{{subject.Practical_mark}}</td>
-                  <td></td>
+                <tr v-for="course in courses" :key="course.id">
+                  <td>{{course.cours_name}}</td>
+                  <td>{{course.start_date}}</td>
+                  <td>{{course.end_date}}</td>
+                  <td>
+                    <button
+                      type="button"
+                      class="btn btn-info btn-sm"
+                      @click="showCourseInfo(course)"
+                    >
+                      <i class="fas fa-info fa-sm"></i>
+                    </button>
+                    <button
+                      type="button"
+                      @click="addStudent(course.realcours_id, course.cours_id)"
+                      class="btn btn-warning btn-sm ml-2"
+                    >
+                      <i class="fas fa-plus fa-xs"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-success btn-sm ml-2">
+                      <i class="far fa-money-bill-alt"></i>
+                    </button>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          <button class="btn btn-success" @click="showStaticModal()">{{'add' | translate }}</button>
+          <!-- <button class="btn btn-success" @click="showStaticModal()">{{'add' | translate }}</button> -->
         </vuestic-widget>
       </div>
     </div>
+
+    <!---------------- course info -------------------------->
+
     <vuestic-modal
       :show.sync="show"
       v-bind:large="true"
       v-bind:force="true"
-      ref="staticModal"
+      ref="courseInfo"
       :cancelClass="'none'"
       :okText="'modal.close' | translate"
     >
-      <div slot="title">{{'add a sbject' | translate}}</div>
+      <div slot="title">{{'course info' | translate}}</div>
+      <div>
+        <div class="table-responsive">
+          <table class="table table-striped first-td-padding">
+            <thead>
+              <tr>
+                <td>{{'attribute' | translate}}</td>
+                <td>{{'value' | translate}}</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>cours_name</td>
+                <td>{{quiredCourse.cours_name}}</td>
+              </tr>
+              <tr>
+                <td>start_date</td>
+                <td>{{quiredCourse.start_date}}</td>
+              </tr>
+              <tr>
+                <td>end_date</td>
+                <td>{{quiredCourse.end_date}}</td>
+              </tr>
+              <tr>
+                <td>price</td>
+                <td>{{quiredCourse.price}}</td>
+              </tr>
+              <tr>
+                <td>subject_id</td>
+                <td>{{quiredCourse.cours_id}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </vuestic-modal>
+
+    <!------------- add student modal  --------------->
+
+    <vuestic-modal
+      :show.sync="show"
+      v-bind:large="true"
+      v-bind:force="true"
+      ref="addStudentModal"
+      :cancelClass="'none'"
+      :okText="'modal.close' | translate"
+    >
+      <div slot="title">{{'add student' | translate}}</div>
       <div>
         <form>
           <div class="va-row">
@@ -44,25 +113,9 @@
               <fieldset>
                 <div class="form-group">
                   <div class="input-group">
-                    <input id="simple-input" v-model="newSubject.courseName" required>
+                    <input id="simple-input" v-model="newStudent.user_id" required>
                     <label class="control-label" for="simple-input">
-                      {{'course-name'
-                      | translate}}
-                    </label>
-                    <i class="bar"></i>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <div class="input-group">
-                    <textarea
-                      type="text"
-                      v-model="newSubject.description"
-                      id="simple-textarea"
-                      required
-                    ></textarea>
-                    <label class="control-label" for="simple-textarea">
-                      {{'course-description'
+                      {{'user_id'
                       | translate}}
                     </label>
                     <i class="bar"></i>
@@ -75,25 +128,9 @@
               <fieldset>
                 <div class="form-group">
                   <div class="input-group">
-                    <input id="simple-input" v-model="newSubject.courseMark" required>
+                    <input id="simple-input" v-model="newStudent.payment" required>
                     <label class="control-label" for="simple-input">
-                      {{'course-mark'
-                      | translate}}
-                    </label>
-                    <i class="bar"></i>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <div class="input-group">
-                    <input
-                      :disabled="!newSubject.isPractical"
-                      v-model="newSubject.practicalMark"
-                      id="simple-input"
-                      required
-                    >
-                    <label class="control-label" for="simple-input">
-                      {{'practical-mark'
+                      {{'payment'
                       | translate}}
                     </label>
                     <i class="bar"></i>
@@ -101,31 +138,13 @@
                 </div>
               </fieldset>
             </div>
-
             <div class="flex md4">
               <fieldset>
-                <div class="form-group">
-                  <vuestic-switch v-model="newSubject.isPractical">
-                    <span slot="trueTitle">{{'practical' | translate}}</span>
-                    <span slot="falseTitle">{{"not" | translate}}</span>
-                  </vuestic-switch>
-                </div>
-                <div class="form-group">
-                  <div class="input-group">
-                    <input id="simple-input" v-model="newSubject.categoryId" required>
-                    <label class="control-label" for="simple-input">
-                      {{'category-id'
-                      | translate}}
-                    </label>
-                    <i class="bar"></i>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <button
-                    class="btn btn-success"
-                    @click="submitNewSubject()"
-                  >{{'submit' | translate }}</button>
-                </div>
+                <h5>
+                  min pay: {{minPay}}
+                  <br>
+                  max pay: {{maxPay}}
+                </h5>
               </fieldset>
             </div>
           </div>
@@ -137,81 +156,71 @@
 
 <script>
 export default {
-  computed: {
-    isSuccessfulEmailValid () {
-      let isValid = false
-      if (this.formFields.successfulEmail) {
-        isValid =
-          this.formFields.successfulEmail.validated &&
-          this.formFields.successfulEmail.valid
-      }
-      return isValid
-    }
-  },
-
   methods: {
     showStaticModal () {
       this.$refs.staticModal.open()
     },
-    submitNewSubject () {},
-    haveExam (num) {
-      if (num === 0) return false
-      else return true
+    showCourseInfo (course) {
+      this.quiredCourse = course
+      this.$refs.courseInfo.open()
+    },
+    addStudent (groupId, subjectId) {
+      this.minPay = 0
+      this.maxPay = 0
+      this.$http
+        .get('/aletqan_project/api/min_max_payment.php')
+        .then(response => {
+          this.minPay = response.data.min_payment
+          this.maxPay = response.data.max_payment
+        })
+      this.newStudent.group_id = groupId
+      this.newStudent.course_id = subjectId
+      this.$refs.addStudentModal.open()
     }
+  },
+  mounted () {
+    this.$http
+      .get('/aletqan_project/api/read_cours_Not_finished.php')
+      .then(r => {
+        this.courses = r.data
+        console.log(r)
+      })
   },
   name: 'Subjects',
   data () {
     return {
       show: true,
-
-      newSubject: {
-        isPractical: true,
-        courseName: '',
-        description: '',
-        practicalMark: null,
-        courseMark: null,
-        categoryid: 0
+      quiredCourse: {},
+      newStudent: {
+        user_id: null,
+        group_id: null,
+        course_id: null,
+        payment: null
       },
+      minPay: 0,
+      maxPay: 0,
 
-      subjects: [
-        {
-          id: '1',
-          fullname: 'ALETQAN',
-          shortname: 'etqan',
-          displayname: 'ALETQAN',
-          categoryid: '0',
-          summary: 'welcome!!</p>',
-          summaryformat: '1',
-          format: 'site',
-          startdate: '0',
-          enddate: '0',
-          numsections: 1,
-          categorysortorder: '1',
-          idnumber: '',
-          showgrades: '1',
-          showreports: '0',
-          newsitems: '3',
-          visible: '1',
-          maxbytes: '0',
-          groupmode: '0',
-          groupmodeforce: '0',
-          defaultgroupingid: '0',
-          lang: '',
-          timecreated: '1557059677',
-          timemodified: '1557062764',
-          forcetheme: '',
-          enablecompletion: '0',
-          completionnotify: '0',
-          courseformatoptions: [
-            {
-              name: 'numsections',
-              value: 1
-            }
-          ],
-          cours_name: 'compilar17',
-          have_exam: '0',
-          Practical_mark: '130'
-        }
+      courses: [
+        // {
+        //   realcours_id: "10",
+        //   cours_id: "23",
+        //   Teacher_id: "2",
+        //   start_date: "2019-05-16",
+        //   end_date: "2019-07-16",
+        //   price: "300",
+        //   attendance_days: "dfdfdf",
+        //   cours_name: "sss"
+        // },
+        // {
+        //   realcours_id: "10",
+        //   cours_id: "23",
+        //   Teacher_id: "2",
+        //   start_date: "2019-05-16",
+        //   end_date: "2019-07-16",
+        //   price: "300",
+        //   attendance_days: "dfdfdf",
+        //   cours_name: "sss"
+        // }
       ]
     }
   },

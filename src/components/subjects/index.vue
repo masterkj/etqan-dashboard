@@ -1,3 +1,4 @@
+/* eslint-disable space-before-function-paren */
 <template>
   <div>
     <div class="va-row">
@@ -16,7 +17,7 @@
               <tbody>
                 <tr v-for="subject in subjects" :key="subject.id">
                   <td>{{subject.cours_name}}</td>
-                  <td>{{haveExam(subject.have_exam)}}</td>
+                  <td>{{have_exam(subject.have_exam)}}</td>
                   <td>{{subject.Practical_mark}}</td>
                   <td>
                     <button type="button" class="btn btn-info btn-sm" @click="showInfo(subject)">
@@ -57,8 +58,12 @@
               <fieldset>
                 <div class="form-group">
                   <div class="input-group">
-                    <input id="simple-input" v-model="newSubject.courseName" required>
-                    <label class="control-label" for="simple-input">
+                    <input id="simple-input" v-model="newSubject.fullname" req
+                    shortname: this.fullnameuired>
+                    <label
+                      class="control-label"
+                      for="simple-input"
+                    >
                       {{'subject-name'
                       | translate}}
                     </label>
@@ -90,8 +95,8 @@
                   <div class="input-group">
                     <input
                       id="simple-input"
-                      :disabled="!newSubject.haveExam"
-                      v-model="newSubject.courseMark"
+                      :disabled="!newSubject.have_exam"
+                      v-model="newSubject.marker"
                       required
                     >
                     <label class="control-label" for="simple-input">
@@ -104,7 +109,7 @@
 
                 <div class="form-group">
                   <div class="input-group">
-                    <input v-model="newSubject.practicalMark" id="simple-input" required>
+                    <input v-model="newSubject.Practical_mark" id="simple-input" required>
                     <label class="control-label" for="simple-input">
                       {{'practical-mark'
                       | translate}}
@@ -118,7 +123,7 @@
             <div class="flex md4">
               <fieldset>
                 <div class="form-group">
-                  <vuestic-switch v-model="newSubject.haveExam">
+                  <vuestic-switch v-model="newSubject.have_exam">
                     <span slot="trueTitle">{{'exam' | translate}}</span>
                     <span slot="falseTitle">{{"not" | translate}}</span>
                   </vuestic-switch>
@@ -172,7 +177,7 @@
               </tr>
               <tr>
                 <td>category-id</td>
-                <td>{{quiredSubject.categoryid}}</td>
+                <td>{{quiredSubject.category}}</td>
               </tr>
               <tr>
                 <td>summary</td>
@@ -184,7 +189,7 @@
               </tr>
               <tr>
                 <td>have_exam</td>
-                <td>{{haveExam(quiredSubject.have_exam)}}</td>
+                <td>{{have_exam(quiredSubject.have_exam)}}</td>
               </tr>
               <tr>
                 <td>Practical_mark</td>
@@ -268,35 +273,31 @@
 
             <div class="flex md4">
               <fieldset>
-                 <div class="form-group">
-                    <div class="input-group">
-                      <vuestic-date-picker
-                        id="date-picker-custom-first-day"
-                        :config="{locale: {firstDayOfWeek: 1}}"
-                        v-model="newCourse.start_date"
-                      />
-                      <label class="control-label" for="date-picker-custom-first-day">
-                        start-date
-                      </label>
-                      <i class="bar"></i>
-                    </div>
+                <div class="form-group">
+                  <div class="input-group">
+                    <vuestic-date-picker
+                      id="date-picker-custom-first-day"
+                      :config="{locale: {firstDayOfWeek: 1}}"
+                      v-model="newCourse.start_date"
+                    />
+                    <label class="control-label" for="date-picker-custom-first-day">start-date</label>
+                    <i class="bar"></i>
                   </div>
+                </div>
 
-                   <div class="form-group">
-                    <div class="input-group">
-                      <vuestic-date-picker
-                        id="date-picker-custom-first-day"
-                        :config="{locale: {firstDayOfWeek: 1}}"
-                        v-model="newCourse.end_date"
-                      />
-                      <label class="control-label" for="date-picker-custom-first-day">
-                        end-date
-                      </label>
-                      <i class="bar"></i>
-                    </div>
+                <div class="form-group">
+                  <div class="input-group">
+                    <vuestic-date-picker
+                      id="date-picker-custom-first-day"
+                      :config="{locale: {firstDayOfWeek: 1}}"
+                      v-model="newCourse.end_date"
+                    />
+                    <label class="control-label" for="date-picker-custom-first-day">end-date</label>
+                    <i class="bar"></i>
                   </div>
+                </div>
 
-                   <div class="form-group">
+                <div class="form-group">
                   <button
                     class="btn btn-success"
                     @click="submitNewCourse()"
@@ -306,6 +307,35 @@
             </div>
           </div>
         </form>
+      </div>
+    </vuestic-modal>
+
+    <!------- success modal ------------>
+    <vuestic-modal
+      :show.sync="showSuccessModal"
+      v-bind:large="true"
+      v-bind:force="true"
+      ref="successModal"
+      :cancelClass="'none'"
+      :okText="'modal.close' | translate"
+    >
+      <div slot="title">{{'success request' | translate}}</div>
+      <div>
+        <p>your request go success</p>
+      </div>
+    </vuestic-modal>
+
+    <vuestic-modal
+      :show.sync="showErrorModal"
+      v-bind:large="true"
+      v-bind:force="true"
+      ref="errorModal"
+      :cancelClass="'none'"
+      :okText="'modal.close' | translate"
+    >
+      <div slot="title">{{'error ' | translate}}</div>
+      <div>
+        <p>{{error}}</p>
       </div>
     </vuestic-modal>
   </div>
@@ -332,10 +362,38 @@ export default {
     clear (field) {
       this[field] = ''
     },
-    submitNewSubject () {},
-    submitNewCourse () {},
+    submitNewSubject () {
+      this.$http
+        .post('/aletqan_project/api/create_course.php', this.newSubject)
+        .then(r => {
+          if (
+            r.data.message === 'Unable to create product. Data is incomplete.'
+          ) {
+            this.error = 'there is wrong in your inputs'
+            this.$refs.errorModal.open()
+          } else this.$refs.successModal.open()
+        })
+        .catch(() => {
+          this.error = 'connection error'
+          this.$refs.errorModal.open()
+        })
+    },
+    submitNewCourse () {
+      this.$http
+        .post('/aletqan_project/api/create_realcourse.php', this.newCourse)
+        .then(r => {
+          if (r.data.message === 'group was created.') { this.$refs.successModal.open() } else {
+            this.error = 'there is wrong in your inputs'
+            this.$refs.errorModal.open()
+          }
+        })
+        .catch(() => {
+          this.error = 'connection error'
+          this.$refs.errorModal.open()
+        })
+    },
 
-    haveExam (num) {
+    have_exam (num) {
       if (num === 0) return false
       else return true
     },
@@ -348,20 +406,30 @@ export default {
       this.addedCourseSubjectId = id
     }
   },
+
+  mounted () {
+    this.$http.get('/aletqan_project/api/read_all_courses.php').then(r => {
+      this.subjects = r.data
+    })
+  },
   name: 'Subjects',
   data () {
     return {
       showAddSubject: true,
       showSubjectInfo: true,
       showAddCourse: true,
+      showSuccessModal: true,
+      showErrorModal: true,
 
+      error: '',
       newSubject: {
-        haveExam: true,
-        courseName: '',
+        have_exam: true,
+        fullname: '',
+        shortname: this.fullname,
         summary: '',
-        practicalMark: null,
-        courseMark: null,
-        categoryid: 0
+        Practical_mark: null,
+        marker: null,
+        category: 0
       },
 
       quiredSubject: {},
@@ -377,82 +445,82 @@ export default {
       },
 
       subjects: [
-        {
-          id: '1',
-          fullname: 'ALETQAN',
-          shortname: 'etqan',
-          displayname: 'ALETQAN',
-          categoryid: '0',
-          summary: 'welcome!!</p>',
-          summaryformat: '1',
-          format: 'site',
-          startdate: '0',
-          enddate: '0',
-          numsections: 1,
-          categorysortorder: '1',
-          idnumber: '',
-          showgrades: '1',
-          showreports: '0',
-          newsitems: '3',
-          visible: '1',
-          maxbytes: '0',
-          groupmode: '0',
-          groupmodeforce: '0',
-          defaultgroupingid: '0',
-          lang: '',
-          timecreated: '1557059677',
-          timemodified: '1557062764',
-          forcetheme: '',
-          enablecompletion: '0',
-          completionnotify: '0',
-          courseformatoptions: [
-            {
-              name: 'numsections',
-              value: 1
-            }
-          ],
-          cours_name: 'compilar17',
-          have_exam: '0',
-          Practical_mark: '130'
-        },
-        {
-          id: '2',
-          fullname: 'ALETQAN',
-          shortname: 'etqan',
-          displayname: 'ALETQAN',
-          categoryid: '0',
-          summary: 'welcome!!</p>',
-          summaryformat: '1',
-          format: 'site',
-          startdate: '0',
-          enddate: '0',
-          numsections: 1,
-          categorysortorder: '1',
-          idnumber: '',
-          showgrades: '1',
-          showreports: '0',
-          newsitems: '3',
-          visible: '1',
-          maxbytes: '0',
-          groupmode: '0',
-          groupmodeforce: '0',
-          defaultgroupingid: '0',
-          lang: '',
-          timecreated: '1557059677',
-          timemodified: '1557062764',
-          forcetheme: '',
-          enablecompletion: '0',
-          completionnotify: '0',
-          courseformatoptions: [
-            {
-              name: 'numsections',
-              value: 1
-            }
-          ],
-          cours_name: 'compilar17',
-          have_exam: '0',
-          Practical_mark: '130'
-        }
+        // {
+        //   id: '1',
+        //   fullname: 'ALETQAN',
+        //   shortname: 'etqan',
+        //   displayname: 'ALETQAN',
+        //   categoryid: '0',
+        //   summary: 'welcome!!</p>',
+        //   summaryformat: '1',
+        //   format: 'site',
+        //   startdate: '0',
+        //   enddate: '0',
+        //   numsections: 1,
+        //   categorysortorder: '1',
+        //   idnumber: '',
+        //   showgrades: '1',
+        //   showreports: '0',
+        //   newsitems: '3',
+        //   visible: '1',
+        //   maxbytes: '0',
+        //   groupmode: '0',
+        //   groupmodeforce: '0',
+        //   defaultgroupingid: '0',
+        //   lang: '',
+        //   timecreated: '1557059677',
+        //   timemodified: '1557062764',
+        //   forcetheme: '',
+        //   enablecompletion: '0',
+        //   completionnotify: '0',
+        //   courseformatoptions: [
+        //     {
+        //       name: 'numsections',
+        //       value: 1
+        //     }
+        //   ],
+        //   cours_name: 'compilar17',
+        //   have_exam: '0',
+        //   Practical_mark: '130'
+        // },
+        // {
+        //   id: '2',
+        //   fullname: 'ALETQAN',
+        //   shortname: 'etqan',
+        //   displayname: 'ALETQAN',
+        //   categoryid: '0',
+        //   summary: 'welcome!!</p>',
+        //   summaryformat: '1',
+        //   format: 'site',
+        //   startdate: '0',
+        //   enddate: '0',
+        //   numsections: 1,
+        //   categorysortorder: '1',
+        //   idnumber: '',
+        //   showgrades: '1',
+        //   showreports: '0',
+        //   newsitems: '3',
+        //   visible: '1',
+        //   maxbytes: '0',
+        //   groupmode: '0',
+        //   groupmodeforce: '0',
+        //   defaultgroupingid: '0',
+        //   lang: '',
+        //   timecreated: '1557059677',
+        //   timemodified: '1557062764',
+        //   forcetheme: '',
+        //   enablecompletion: '0',
+        //   completionnotify: '0',
+        //   courseformatoptions: [
+        //     {
+        //       name: 'numsections',
+        //       value: 1
+        //     }
+        //   ],
+        //   cours_name: 'compilar17',
+        //   have_exam: '0',
+        //   Practical_mark: '130'
+        // }
       ]
     }
   },

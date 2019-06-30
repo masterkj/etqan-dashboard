@@ -13,6 +13,11 @@ import VuesticPlugin from '@/vuestic-theme/vuestic-plugin'
 import './i18n'
 import YmapPlugin from 'vue-yandex-maps'
 
+import axios from 'axios'
+
+Vue.prototype.$http = axios.create({ baseURL: 'http://localhost:8080/moodle' })
+Vue.prototype.$baseURL = 'http://localhost:8080/moodle'
+
 Vue.use(VuesticPlugin)
 Vue.use(YmapPlugin)
 
